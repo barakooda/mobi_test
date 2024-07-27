@@ -29,6 +29,8 @@ public:
     void computeForwardAndRightVectors();
     void print() const;
 
+    const std::vector<Lane>& getLanes() const; // Getter for lanes
+
 private:
     std::vector<Lane> lanes;
 };

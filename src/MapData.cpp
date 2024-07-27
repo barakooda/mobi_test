@@ -25,6 +25,10 @@ bool MapData::loadFromFile(const std::filesystem::path& filePath) {
     for (const auto& laneJson : jsonData["lanes"]) {
         Lane lane;
         lane.id = laneJson["id"];
+        //if (lane.id > 20) {
+        //    return true;
+        //}
+        
         lane.predecessor_ids = laneJson["predecessor_ids"].get<std::vector<int>>();
         lane.successor_ids = laneJson["successor_ids"].get<std::vector<int>>();
 
@@ -101,4 +105,8 @@ void MapData::print() const {
         }
         std::cout << std::endl;
     }
+}
+
+const std::vector<Lane>& MapData::getLanes() const {
+    return lanes;
 }
