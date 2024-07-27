@@ -4,11 +4,15 @@
 #include <string>
 #include <vector>
 #include <filesystem>
+#include <glm/glm.hpp>
 #include "json/json.hpp"
 
 struct Point {
-    float x, y, z;
-    float up_x, up_y, up_z;
+    glm::vec3 location;
+    glm::vec3 up_vector;
+    glm::vec3 forward_vector;
+    glm::vec3 right_vector;
+
     float lane_width;
 };
 
@@ -22,6 +26,7 @@ struct Lane {
 class MapData {
 public:
     bool loadFromFile(const std::filesystem::path& filePath);
+    void computeForwardAndRightVectors();
     void print() const;
 
 private:

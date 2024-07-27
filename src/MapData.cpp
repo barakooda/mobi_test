@@ -1,6 +1,7 @@
 #include "mobi_test/MapData.h"
 #include <fstream>
 #include <iostream>
+#include <glm/glm.hpp>
 
 // for convenience
 using json = nlohmann::json;
@@ -29,12 +30,16 @@ bool MapData::loadFromFile(const std::filesystem::path& filePath) {
 
         for (const auto& pointJson : laneJson["points"]) {
             Point point;
-            point.x = pointJson["location"]["x"];
-            point.y = pointJson["location"]["y"];
-            point.z = pointJson["location"]["z"];
-            point.up_x = pointJson["up_vector"]["x"];
-            point.up_y = pointJson["up_vector"]["y"];
-            point.up_z = pointJson["up_vector"]["z"];
+            point.location = glm::vec3(
+                pointJson["location"]["x"],
+                pointJson["location"]["y"],
+                pointJson["location"]["z"]
+            );
+            point.up_vector = glm::vec3(
+                pointJson["up_vector"]["x"],
+                pointJson["up_vector"]["y"],
+                pointJson["up_vector"]["z"]
+            );
             point.lane_width = pointJson["lane_width"];
             lane.points.push_back(point);
         }
@@ -42,7 +47,34 @@ bool MapData::loadFromFile(const std::filesystem::path& filePath) {
         lanes.push_back(lane);
     }
 
+    // Compute vectors after loading data
+    computeForwardAndRightVectors();
+
     return true;
+}
+
+void MapData::computeForwardAndRightVectors() {
+    for (auto& lane : lanes) {
+        for (size_t i = 0; i < lane.points.size(); ++i) {
+            Point& point = lane.points[i];
+
+            if (i < lane.points.size() - 1) {
+                Point& next_point = lane.points[i + 1];
+                point.forward_vector = glm::normalize(next_point.location - point.location);
+            } else {
+                // For the last point, use the forward vector of the previous point
+                if (i > 0) {
+                    Point& prev_point = lane.points[i - 1];
+                    point.forward_vector = prev_point.forward_vector;
+                } else {
+                    point.forward_vector = glm::vec3(0.0f, 0.0f, 0.0f); // Default if only one point exists
+                }
+            }
+
+            // Compute right vector as cross product of forward and up vectors
+            point.right_vector = glm::normalize(glm::cross(point.forward_vector, point.up_vector));
+        }
+    }
 }
 
 void MapData::print() const {
@@ -61,8 +93,10 @@ void MapData::print() const {
         std::cout << std::endl;
 
         for (const auto& point : lane.points) {
-            std::cout << "Point: (" << point.x << ", " << point.y << ", " << point.z << "), ";
-            std::cout << "Up Vector: (" << point.up_x << ", " << point.up_y << ", " << point.up_z << "), ";
+            std::cout << "Point: (" << point.location.x << ", " << point.location.y << ", " << point.location.z << "), ";
+            std::cout << "Up Vector: (" << point.up_vector.x << ", " << point.up_vector.y << ", " << point.up_vector.z << "), ";
+            std::cout << "Forward Vector: (" << point.forward_vector.x << ", " << point.forward_vector.y << ", " << point.forward_vector.z << "), ";
+            std::cout << "Right Vector: (" << point.right_vector.x << ", " << point.right_vector.y << ", " << point.right_vector.z << "), ";
             std::cout << "Lane Width: " << point.lane_width << std::endl;
         }
         std::cout << std::endl;
