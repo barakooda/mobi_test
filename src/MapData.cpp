@@ -48,17 +48,20 @@ bool MapData::loadFromFile(const std::filesystem::path& filePath) {
             lane.points.push_back(point);
         }
 
+        ComputeLaneLength(const_cast<Lane&>(lane));
+        ComputeForwardAndRightVector(const_cast<Lane&>(lane));
+
         lanes.push_back(lane);
     }
 
     // Compute vectors after loading data
-    computeForwardAndRightVectors();
+    
 
     return true;
 }
 
-void MapData::computeForwardAndRightVectors() {
-    for (auto& lane : lanes) {
+void MapData::ComputeForwardAndRightVector(Lane& lane) {
+    
         for (size_t i = 0; i < lane.points.size(); ++i) {
             Point& point = lane.points[i];
 
@@ -78,11 +81,13 @@ void MapData::computeForwardAndRightVectors() {
             // Compute right vector as cross product of forward and up vectors
             point.right_vector = glm::normalize(glm::cross(point.forward_vector, point.up_vector));
         }
-    }
+    
 }
+
 
 void MapData::print() const {
     for (const auto& lane : lanes) {
+        
         std::cout << "Lane ID: " << lane.id << std::endl;
         std::cout << "Predecessor IDs: ";
         for (const auto& pred_id : lane.predecessor_ids) {
@@ -94,6 +99,10 @@ void MapData::print() const {
         for (const auto& succ_id : lane.successor_ids) {
             std::cout << succ_id << " ";
         }
+        std::cout << std::endl;
+        
+        std::cout << "Length: ";
+        std::cout << lane.length;
         std::cout << std::endl;
 
         for (const auto& point : lane.points) {
@@ -109,4 +118,11 @@ void MapData::print() const {
 
 const std::vector<Lane>& MapData::getLanes() const {
     return lanes;
+}
+
+void MapData::ComputeLaneLength(Lane& lane) {
+    lane.length = 0.0f;
+    for (size_t i = 0; i < lane.points.size() - 1; ++i) {
+        lane.length += glm::distance(lane.points[i].location, lane.points[i + 1].location);
+    }
 }

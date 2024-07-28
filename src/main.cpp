@@ -1,12 +1,10 @@
 #include <iostream>
 #include <fstream>
 #include <filesystem>
-#include "mobi_test/sample.h"
 #include "json/json.hpp"  // Include the JSON library
 #include "utils/utils.h"  // Include the utils library
 #include "mobi_test/MapData.h"  // Include the MapData class
-#include "mobi_test/PathGraph.h"  // Include the PathGraph class
-#include "mobi_test/Path.h"  // Include the Path struct
+#include "mobi_test/Graph.h"  // Include the Graph class
 
 int main() {
     std::cout << "Hello, mobi_test!" << std::endl;
@@ -20,20 +18,19 @@ int main() {
     MapData mapData;
 
     if (mapData.loadFromFile(jsonFilePath)) {
-        //mapData.print();
+        mapData.print();
     } else {
         std::cerr << "Failed to load map data from file" << std::endl;
     }
 
-    PathGraph pathGraph(mapData);
+    // Create a graph and convert the MapData lanes to nodes in the graph
+    Graph graph;
+    convertMapDataToGraph(mapData, graph);
 
-    std::vector<Path> paths = pathGraph.FindPaths(3, 0, 600.f); // Example parameters
+    // Print the graph to verify the conversion
+    graph.printGraph();
 
-    for (const auto& path : paths) {
-        std::cout << "Path length: " << path.length << std::endl;
-    }
-
-    
+    return 0;
 
 
     return 0;

@@ -6,32 +6,21 @@
 #include <filesystem>
 #include <glm/glm.hpp>
 #include "json/json.hpp"
+#include "mobi_test/Point.h"
+#include "mobi_test/Lane.h"
 
-struct Point {
-    glm::vec3 location;
-    glm::vec3 up_vector;
-    glm::vec3 forward_vector;
-    glm::vec3 right_vector;
-
-    float lane_width;
-};
-
-struct Lane {
-    int id;
-    std::vector<int> predecessor_ids;
-    std::vector<int> successor_ids;
-    std::vector<Point> points;
-};
 
 class MapData {
 public:
     bool loadFromFile(const std::filesystem::path& filePath);
-    void computeForwardAndRightVectors();
+    
     void print() const;
 
     const std::vector<Lane>& getLanes() const; // Getter for lanes
 
 private:
+    void ComputeForwardAndRightVector(Lane& lane);
+    void ComputeLaneLength(Lane& lane);
     std::vector<Lane> lanes;
 };
 
