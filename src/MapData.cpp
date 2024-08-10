@@ -105,13 +105,21 @@ void MapData::print() const {
         std::cout << lane.length;
         std::cout << std::endl;
 
-        for (const auto& point : lane.points) {
-            std::cout << "Point: (" << point.location.x << ", " << point.location.y << ", " << point.location.z << "), ";
-            std::cout << "Up Vector: (" << point.up_vector.x << ", " << point.up_vector.y << ", " << point.up_vector.z << "), ";
-            std::cout << "Forward Vector: (" << point.forward_vector.x << ", " << point.forward_vector.y << ", " << point.forward_vector.z << "), ";
-            std::cout << "Right Vector: (" << point.right_vector.x << ", " << point.right_vector.y << ", " << point.right_vector.z << "), ";
-            std::cout << "Lane Width: " << point.lane_width << std::endl;
+        bool is_debug_points = false;
+        if (is_debug_points) {
+
+            for (const auto& point : lane.points) 
+            
+            {
+                std::cout << "Point: (" << point.location.x << ", " << point.location.y << ", " << point.location.z << "), ";
+                std::cout << "Up Vector: (" << point.up_vector.x << ", " << point.up_vector.y << ", " << point.up_vector.z << "), ";
+                std::cout << "Forward Vector: (" << point.forward_vector.x << ", " << point.forward_vector.y << ", " << point.forward_vector.z << "), ";
+                std::cout << "Right Vector: (" << point.right_vector.x << ", " << point.right_vector.y << ", " << point.right_vector.z << "), ";
+                std::cout << "Lane Width: " << point.lane_width << std::endl;
+            }
+
         }
+       
         std::cout << std::endl;
     }
 }

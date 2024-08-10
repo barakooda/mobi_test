@@ -25,24 +25,13 @@ int main() {
     }
 
     // Save the MapData object to a new JSON file
-    std::filesystem::path outputFilePath = project_path / "output_path.json";
+    std::filesystem::path outputFilePath = project_path / "resources/data/enhanced_map.json";
     if (!saveMapDataToFile(mapData, outputFilePath)) {
         std::cerr << "Failed to save map data to file" << std::endl;
         return 1;
     }
 
     std::cout << "Map data saved successfully to " << outputFilePath << std::endl;
-    return 0;
-
-    // Create a graph and convert the MapData lanes to nodes in the graph
-    //Graph graph;
-    //convertMapDataToGraph(mapData, graph);
-
-    // Print the graph to verify the conversion
-    //graph.printGraph();
-
-    
-
 
     return 0;
 }
