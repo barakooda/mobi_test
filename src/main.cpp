@@ -24,6 +24,24 @@ int main() {
         std::cerr << "Failed to load map data from file" << std::endl;
     }
 
+    // Create a Graph object
+    Graph graph;
+
+    // Convert the MapData object to a Graph object
+    convertMapDataToGraph(mapData, graph);
+
+    // Print the Graph object
+    graph.printGraph();
+
+    //to find paths in the lane graph, with min required length
+    //path begins at a specific lane point and may traverse multiple lanes, but it must follow the successors/predecessors connections defined in the map
+    //If a path contains cycles, don’t return it.
+
+    // Find paths in the lane graph
+    
+
+
+
     // Save the MapData object to a new JSON file
     std::filesystem::path outputFilePath = project_path / "resources/data/enhanced_map.json";
     if (!saveMapDataToFile(mapData, outputFilePath)) {
